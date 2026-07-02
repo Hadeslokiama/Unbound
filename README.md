@@ -12,44 +12,45 @@ The application is split into two core modules: a **Buyer Storefront** (complete
 ---
 
 ## File Structure
-``
+
+```text
 SoleStride/
-├── admin/                     # Admin/Seller Dashboard Module
-│   ├── dashboard.php          # Admin landing page (inventory reports overview)
-│   ├── inventory.php          # View and manage products (CRUD triggers)
-│   ├── manage-users.php       # System admin controls (role management)
-│   ├── audit-log.php          # Security-focused ledger page
-│   └── process-inventory.php  # Handles background CRUD processing (POST requests)
-├── assets/                    # Static frontend files
+├── admin/                         # Admin/Seller Dashboard Module
+│   ├── dashboard.php              # Admin landing page (inventory reports overview)
+│   ├── inventory.php              # View and manage products (CRUD triggers)
+│   ├── manage-users.php           # System admin controls (role management)
+│   ├── audit-log.php              # Security-focused ledger page
+│   └── process-inventory.php      # Handles background CRUD processing (POST requests)
+├── assets/                        # Static frontend files
 │   ├── css/
-│   │   └── style.css          # Custom CSS / Tailwind output
+│   │   └── style.css              # Custom CSS / Tailwind output
 │   ├── images/
-│   │   └── products/          # Footwear upload images (Sneakers, Boots, etc.)
+│   │   └── products/              # Footwear upload images (Sneakers, Boots, etc.)
 │   └── js/
-│       └── main.js            # General frontend JavaScript
-├── config/                    # Configuration files
-│   └── db.php                 # Database connection credentials & initialization
-├── database/                  # Database migration scripts
-│   └── schema.sql             # SQL dump file for local setup
-├── includes/                  # Reusable UI components & background logic
-│   ├── footer.php             # Website footer (contains required Academic Disclaimer)
-│   ├── header.php             # Main navigation bar (Buyer Storefront)
-│   ├── admin-header.php       # Admin sidebar/navigation
-│   ├── auth-check.php         # Middleware script to protect secure pages
-│   └── functions.php          # Global utility functions (validation, sanitization)
-├── auth/                      # Authentication handling
-│   ├── login.php              # Login page (shared or separate)
-│   ├── register.php           # Buyer registration page
-│   ├── verify-email.php       # Process email confirmation link
-│   └── logout.php             # Destroys sessions and redirects
-├── about.php                  # About Page (Vision, mission, group members)
-├── cart.php                   # Shopping cart page
-├── checkout.php               # Multi-step checkout pipeline
-├── index.php                  # Homepage / Categorized store catalog catalog
-├── product-details.php        # Deep dive item page with "Add to Cart" action
+│       └── main.js                # General frontend JavaScript
+├── config/                        # Configuration files
+│   └── db.php                     # Database connection credentials & initialization
+├── database/                      # Database migration scripts
+│   └── schema.sql                 # SQL dump file for local setup
+├── includes/                      # Reusable UI components & background logic
+│   ├── footer.php                 # Website footer (contains required Academic Disclaimer)
+│   ├── header.php                 # Main navigation bar (Buyer Storefront)
+│   ├── admin-header.php           # Admin sidebar/navigation
+│   ├── auth-check.php             # Middleware script to protect secure pages
+│   └── functions.php              # Global utility functions (validation, sanitization)
+├── auth/                          # Authentication handling
+│   ├── login.php                  # Login page (shared or separate)
+│   ├── register.php               # Buyer registration page
+│   ├── verify-email.php           # Process email confirmation link
+│   └── logout.php                 # Destroys sessions and redirects
+├── about.php                      # About Page (Vision, mission, group members)
+├── cart.php                       # Shopping cart page
+├── checkout.php                   # Multi-step checkout pipeline
+├── index.php                      # Homepage / Categorized store catalog catalog
+├── product-details.php            # Deep dive item page with "Add to Cart" action
 ├── LICENSE
 └── README.md
-``
+```
 ---
 
 ## Features
