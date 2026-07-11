@@ -108,6 +108,51 @@ function require_admin(string $redirect = 'auth/login.php'): void
 }
 
 // ============================================================
+// CART HELPERS
+// ============================================================
+
+function get_cart_item_count(mysqli $conn): int
+{
+    if (!is_logged_in()) {
+        return 0;
+    }
+
+    $user_id = (int) $_SESSION['user_id'];
+    $stmt = mysqli_prepare($conn, "SELECT COALESCE(SUM(quantity), 0) AS item_count FROM cart WHERE user_id = ?");
+
+    if (!$stmt) {
+        error_log("get_cart_item_count prepare failed: " . mysqli_error($conn));
+        return 0;
+    }
+
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $row = $result ? mysqli_fetch_assoc($result) : null;
+    mysqli_stmt_close($stmt);
+
+    return (int) ($row['item_count'] ?? 0);
+}
+
+function get_cart_csrf_token(): string
+{
+    start_secure_session();
+
+    if (empty($_SESSION['cart_csrf_token'])) {
+        $_SESSION['cart_csrf_token'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['cart_csrf_token'];
+}
+
+function verify_cart_csrf_token(string $token): bool
+{
+    start_secure_session();
+
+    return isset($_SESSION['cart_csrf_token']) && hash_equals($_SESSION['cart_csrf_token'], $token);
+}
+
+// ============================================================
 // AUDIT LOGGING
 // ============================================================
 

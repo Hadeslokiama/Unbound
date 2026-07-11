@@ -3,7 +3,6 @@
 require_once 'config/db.php';
 require_once 'includes/functions.php';
 require_login();
-require_once 'includes/header.php';
 
 global $conn;
 
@@ -11,21 +10,42 @@ global $conn;
 $logged_in = is_logged_in();
 $user_id = $logged_in ? (int)$_SESSION['user_id'] : 0;
 
+function cart_safe_redirect_target(string $target, string $fallback): string
+{
+    $target = trim($target);
+    $base_url = app_url('');
+
+    if ($target !== '' && str_starts_with($target, '/')) {
+        if ($base_url === '' || $target === $base_url || str_starts_with($target, $base_url . '/') || str_starts_with($target, $base_url . '?') || str_starts_with($target, $base_url . '#')) {
+            return $target;
+        }
+    }
+
+    return app_url($fallback);
+}
+
 // Execute operational data-mutations if matching signature post arrays exist
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $logged_in) {
     $action = sanitize_input($_POST['action']);
+    $posted_token = (string) ($_POST['csrf_token'] ?? '');
     $product_id = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
-    
-    if ($product_id > 0) {
+
+    if (!verify_cart_csrf_token($posted_token)) {
+        header('Location: ' . app_url('cart.php'));
+        exit;
+    }
+
+    if ($product_id > 0 && in_array($action, ['add', 'update', 'remove'], true)) {
         if ($action === 'add') {
             $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
-            
+            $quantity = max(1, min($quantity, 99));
+
             // Check if user already holds a reference row to this item
             $check_stmt = mysqli_prepare($conn, "SELECT id, quantity FROM cart WHERE user_id = ? AND product_id = ?");
             mysqli_stmt_bind_param($check_stmt, "ii", $user_id, $product_id);
             mysqli_stmt_execute($check_stmt);
             $check_res = mysqli_stmt_get_result($check_stmt);
-            
+
             if ($row = mysqli_fetch_assoc($check_res)) {
                 // Increment existing allocation mapping cleanly
                 $new_qty = $row['quantity'] + $quantity;
@@ -41,9 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $logged_
                 mysqli_stmt_close($ins_stmt);
             }
             mysqli_stmt_close($check_stmt);
-            
+
         } elseif ($action === 'update') {
             $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 0;
+            $quantity = max(0, min($quantity, 99));
             if ($quantity <= 0) {
                 $del_stmt = mysqli_prepare($conn, "DELETE FROM cart WHERE user_id = ? AND product_id = ?");
                 mysqli_stmt_bind_param($del_stmt, "ii", $user_id, $product_id);
@@ -62,9 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $logged_
             mysqli_stmt_close($del_stmt);
         }
     }
-    header('Location: ' . app_url('cart.php'));
+
+    $redirect_to = $action === 'add'
+        ? cart_safe_redirect_target((string) ($_POST['redirect_to'] ?? ''), 'index.php#collection')
+        : app_url('cart.php');
+
+    header('Location: ' . $redirect_to);
     exit;
 }
+
+$cart_csrf_token = get_cart_csrf_token();
+require_once 'includes/header.php';
 
 // Fetch all persisted cart lines linked to this specific user ID
 $items = [];
@@ -113,19 +142,21 @@ if ($logged_in) {
                                 <img src="<?php echo htmlspecialchars(app_url($item['image_path'])); ?>" alt="">
                                 <span><?php echo htmlspecialchars($item['name']); ?></span>
                             </td>
-                            <td>$<?php echo number_format($item['price'], 2); ?></td>
+                            <td>&#8369;<?php echo number_format($item['price'], 2); ?></td>
                             <td>
                                 <form action="<?php echo app_url('cart.php'); ?>" method="POST" class="inline-form">
                                     <input type="hidden" name="action" value="update">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($cart_csrf_token, ENT_QUOTES, 'UTF-8'); ?>">
                                     <input type="hidden" name="product_id" value="<?php echo (int)$item['product_id']; ?>">
                                     <input type="number" name="quantity" value="<?php echo (int)$item['quantity']; ?>" min="1" class="quantity-input">
                                     <button type="submit" class="btn btn-secondary btn-sm">Update</button>
                                 </form>
                             </td>
-                            <td>$<?php echo number_format($item['subtotal'], 2); ?></td>
+                            <td>&#8369;<?php echo number_format($item['subtotal'], 2); ?></td>
                             <td>
                                 <form action="<?php echo app_url('cart.php'); ?>" method="POST">
                                     <input type="hidden" name="action" value="remove">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($cart_csrf_token, ENT_QUOTES, 'UTF-8'); ?>">
                                     <input type="hidden" name="product_id" value="<?php echo (int)$item['product_id']; ?>">
                                     <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
@@ -136,7 +167,7 @@ if ($logged_in) {
             </table>
 
             <div class="cart-summary">
-                <h3>Total Amount: $<?php echo number_format($cart_total, 2); ?></h3>
+                <h3>Total Amount: &#8369;<?php echo number_format($cart_total, 2); ?></h3>
                 <a href="<?= app_url('checkout.php') ?>" class="btn btn-primary">Proceed to Checkout</a>
             </div>
         <?php else: ?>

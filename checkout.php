@@ -118,13 +118,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php foreach ($cart_items as $item): ?>
                         <li>
                             <span><?php echo htmlspecialchars($item['name']); ?> (x<?php echo (int)$item['quantity']; ?>)</span>
-                            <span>$<?php echo number_format($item['subtotal'], 2); ?></span>
+                            <span>&#8369;<?php echo number_format($item['subtotal'], 2); ?></span>
                         </li>
                     <?php endforeach; ?>
                 </ul>
                 <div class="summary-total">
                     <span>Total Owed:</span>
-                    <span>$<?php echo number_format($total_amount, 2); ?></span>
+                    <span>&#8369;<?php echo number_format($total_amount, 2); ?></span>
                 </div>
             </div>
 

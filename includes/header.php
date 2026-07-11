@@ -2,6 +2,8 @@
 declare(strict_types=1);
 require_once __DIR__ . '/functions.php';
 start_secure_session();
+global $conn;
+$cart_item_count = is_logged_in() ? get_cart_item_count($conn) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="unbound-light">
@@ -120,9 +122,16 @@ start_secure_session();
         <ul class="nav-links">
             <li><a class="nav-link" href="<?= app_url('index.php') ?>">Shop</a></li>
             <li><a class="nav-link" href="<?= app_url('about.php') ?>">About</a></li>
-            <li><a class="nav-link" href="<?= app_url('cart.php') ?>">Cart</a></li>
+            <li>
+                <a class="nav-link cart-nav-link" href="<?= app_url('cart.php') ?>">
+                    <span>Cart</span>
+                    <?php if ($cart_item_count > 0): ?>
+                        <span class="cart-badge" aria-label="<?= (int) $cart_item_count ?> items in cart"><?= (int) $cart_item_count ?></span>
+                    <?php endif; ?>
+                </a>
+            </li>
             <?php if (is_logged_in()): ?>
-                <li><a class="btn btn-sm btn-outline" href="<?= app_url('auth/logout.php') ?>">Logout</a></li>
+                <li><a class="btn btn-sm btn-primary" href="<?= app_url('auth/logout.php') ?>">Logout</a></li>
             <?php else: ?>
                 <li><a class="nav-link" href="<?= app_url('auth/login.php') ?>">Login</a></li>
                 <li><a class="btn btn-sm btn-primary" href="<?= app_url('auth/register.php') ?>">Register</a></li>

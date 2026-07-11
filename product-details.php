@@ -30,6 +30,9 @@ if (!$product) {
     require_once 'includes/footer.php';
     exit;
 }
+
+$cart_csrf_token = get_cart_csrf_token();
+$product_redirect = app_url('product-details.php?id=' . (int) $product['id']);
 ?>
 
 <section class="product-details-container">
@@ -39,12 +42,14 @@ if (!$product) {
         <div class="product-info-panel">
             <p class="kicker">Product file</p>
             <h1><?php echo htmlspecialchars($product['name']); ?></h1>
-            <p class="price">$<?php echo number_format($product['price'], 2); ?></p>
+            <p class="price">&#8369;<?php echo number_format($product['price'], 2); ?></p>
             <p class="description"><?php echo htmlspecialchars($product['description']); ?></p>
 
             <?php if ((int)$product['stock_quantity'] > 0): ?>
                 <form action="<?php echo app_url('cart.php'); ?>" method="POST" class="add-to-cart-form">
                     <input type="hidden" name="action" value="add">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($cart_csrf_token, ENT_QUOTES, 'UTF-8'); ?>">
+                    <input type="hidden" name="redirect_to" value="<?php echo htmlspecialchars($product_redirect, ENT_QUOTES, 'UTF-8'); ?>">
                     <input type="hidden" name="product_id" value="<?php echo (int)$product['id']; ?>">
                     
                     <div class="form-group quantity-field">

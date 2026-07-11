@@ -54,10 +54,8 @@ Unbound/
 ├── assets/                        # Static frontend files
 │   ├── css/
 │   │   └── style.css              # Custom CSS / Tailwind output
-│   ├── images/
-│   │   └── products/              # Apparel upload images (Tops, Bottoms, etc.)
-│   └── js/
-│       └── main.js                # General frontend JavaScript
+│   └── images/
+│       └── products/              # Apparel upload images (Tops, Bottoms, etc.)
 ├── config/                        # Configuration files
 │   └── db.php                     # Database connection credentials & initialization
 ├── database/                      # Database migration scripts

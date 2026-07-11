@@ -219,34 +219,36 @@ if ($stmt) {
                         </td>
                         <td><?= htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td><?= htmlspecialchars($product['category'], ENT_QUOTES, 'UTF-8') ?></td>
-                        <td>₱<?= number_format((float) $product['price'], 2) ?></td>
+                        <td>&#8369;<?= number_format((float) $product['price'], 2) ?></td>
                         <td><?= (int) $product['stock_quantity'] ?></td>
                         <td><?= (int) $product['is_active'] === 1 ? 'Active' : 'Inactive' ?></td>
-                        <td>
-                            <a href="<?= app_url('admin/inventory.php?edit=' . (int) $product['id']) ?>">Edit</a>
+                        <td class="admin-actions-cell">
+                            <div class="admin-actions">
+                                <a href="<?= app_url('admin/inventory.php?edit=' . (int) $product['id']) ?>">Edit</a>
 
-                            <form
-                                method="post"
-                                action="<?= app_url('admin/process-inventory.php') ?>"
-                                class="inline-form"
-                            >
-                                <input type="hidden" name="action" value="toggle_product_status">
-                                <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">
-                                <button type="submit">
-                                    <?= (int) $product['is_active'] === 1 ? 'Deactivate' : 'Activate' ?>
-                                </button>
-                            </form>
+                                <form
+                                    method="post"
+                                    action="<?= app_url('admin/process-inventory.php') ?>"
+                                    class="inline-form"
+                                >
+                                    <input type="hidden" name="action" value="toggle_product_status">
+                                    <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">
+                                    <button type="submit">
+                                        <?= (int) $product['is_active'] === 1 ? 'Deactivate' : 'Activate' ?>
+                                    </button>
+                                </form>
 
-                            <form
-                                method="post"
-                                action="<?= app_url('admin/process-inventory.php') ?>"
-                                class="inline-form"
-                                onsubmit="return confirm('Deactivate this product?');"
-                            >
-                                <input type="hidden" name="action" value="delete_product">
-                                <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">
-                                <button type="submit">Delete</button>
-                            </form>
+                                <form
+                                    method="post"
+                                    action="<?= app_url('admin/process-inventory.php') ?>"
+                                    class="inline-form"
+                                    onsubmit="return confirm('Deactivate this product?');"
+                                >
+                                    <input type="hidden" name="action" value="delete_product">
+                                    <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 <?php endwhile; ?>
