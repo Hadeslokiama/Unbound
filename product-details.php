@@ -12,7 +12,7 @@ $product = null;
 
 if ($product_id > 0) {
     // Read exact schema structure targeting verified active configurations
-    $query = "SELECT id, name, description, price, image_url, stock_quantity FROM products WHERE id = ? AND is_active = 1 LIMIT 1";
+    $query = "SELECT id, name, description, price, image_path, stock_quantity FROM products WHERE id = ? AND is_active = 1 LIMIT 1";
     $stmt = mysqli_prepare($conn, $query);
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, "i", $product_id);
@@ -26,7 +26,7 @@ if ($product_id > 0) {
 }
 
 if (!$product) {
-    echo "<main class='site-main'><p>The requested product is unavailable.</p><a href='index.php'>Back to store</a></main>";
+    echo "<main class='site-main'><p>The requested product is unavailable.</p><a href='" . app_url('index.php') . "'>Back to store</a></main>";
     require_once 'includes/footer.php';
     exit;
 }
@@ -35,7 +35,7 @@ if (!$product) {
 <main class="site-main">
     <div class="product-details-container" style="display: flex; gap: 40px; margin-top: 20px;">
         <div class="product-image-panel" style="flex: 1;">
-            <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="max-width:100%; height:auto;">
+            <img src="<?php echo htmlspecialchars(app_url($product['image_path'])); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="max-width:100%; height:auto;">
         </div>
         <div class="product-info-panel" style="flex: 1;">
             <h1><?php echo htmlspecialchars($product['name']); ?></h1>
@@ -43,7 +43,7 @@ if (!$product) {
             <p class="description" style="line-height: 1.6; margin-bottom: 25px;"><?php echo htmlspecialchars($product['description']); ?></p>
 
             <?php if ((int)$product['stock_quantity'] > 0): ?>
-                <form action="cart.php" method="POST" class="add-to-cart-form">
+                <form action="<?php echo app_url('cart.php'); ?>" method="POST" class="add-to-cart-form">
                     <input type="hidden" name="action" value="add">
                     <input type="hidden" name="product_id" value="<?php echo (int)$product['id']; ?>">
                     

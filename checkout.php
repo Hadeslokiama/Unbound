@@ -32,7 +32,7 @@ if ($stmt) {
 
 // Bounce user to index if zero line records are fetched
 if (empty($cart_items)) {
-    header("Location: index.php");
+    header('Location: ' . app_url('index.php'));
     exit;
 }
 
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             foreach ($cart_items as $item) {
                 // Populate child records safely
-                $item_stmt = mysqli_prepare($conn, "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
+                $item_stmt = mysqli_prepare($conn, "INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?)");
                 mysqli_stmt_bind_param($item_stmt, "iiid", $order_id, $item['product_id'], $item['quantity'], $item['price']);
                 mysqli_stmt_execute($item_stmt);
                 mysqli_stmt_close($item_stmt);
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="alert alert-success" style="background: #e6f4ea; padding: 15px; border-radius: 4px; border: 1px solid #137333; margin-top: 20px;">
                 <h3>Order Placed Successfully!</h3>
                 <p>Your minimalist apparel procurement request has been finalized.</p>
-                <a href="index.php" class="btn btn-primary" style="display:inline-block; margin-top:10px;">Return to Shop</a>
+                <a href="<?= app_url('index.php') ?>" class="btn btn-primary" style="display:inline-block; margin-top:10px;">Return to Shop</a>
             </div>
         <?php else: ?>
             <?php if (!empty($error_msg)): ?>
@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <form action="checkout.php" method="POST">
+            <form action="<?= app_url('checkout.php') ?>" method="POST">
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label for="shipping_address" style="display:block; font-weight:bold; margin-bottom:5px;">Shipping Address:</label>
                     <textarea id="shipping_address" name="shipping_address" rows="4" style="width:100%; padding:10px; box-sizing:border-box;" required><?php echo htmlspecialchars($user_address); ?></textarea>

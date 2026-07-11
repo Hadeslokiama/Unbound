@@ -88,13 +88,13 @@ Unbound/
 ### Buyer Part (Storefront)
 * **User Registration & Validation:** Comprehensive sign-up process capturing complete name, valid email, password (with confirmation validation), complete address, and contact numbers.
 * **Email Confirmation:** Automation system that dispatches a confirmation email to the user upon registration to verify their account.
-* **Categorized Store Page:** Clean, intuitive catalog browsing specifically tailored for different footwear categories (e.g., Sneakers, Boots, Formal, Athletic) with seamless "Add to Cart" actions.
+* **Categorized Store Page:** Clean, intuitive catalog browsing specifically tailored for different apparel categories (Tops, Bottoms, Outerwear, Accessories) with seamless "Add to Cart" actions.
 * **Shopping Cart & Checkout:** Persistent cart management tracking selected items, quantities, and a multi-step checkout/mock-payment pipeline (no live payment APIs integrated).
 * **About Page:** Dedicated space showcasing our company vision, mission, and the contributing group members.
 
 ### Seller Part (Admin Dashboard)
 * **System Admin Controls:** A secure portal allowing main administrators to add, modify, and manage user roles authorized to perform admin actions.
-* **Stock & Price Management:** Dynamic CRUD operations for footwear inventory, enabling admins to easily restock items, add new products, or adjust pricing.
+* **Stock & Price Management:** Dynamic CRUD operations for apparel inventory, enabling admins to easily restock items, add new products, or adjust pricing.
 * **Inventory Reports:** Real-time visibility into stock levels, highlighting low-stock items or remaining quantities.
 * **System Audit Log:** A security-focused ledger tracking all actions and operational activities performed by the currently authenticated admin user.
 
@@ -114,7 +114,7 @@ Unbound/
 The MySQL database consists of the following foundational tables managed entirely through standard SQL queries:
 * `users` - Stores buyer credentials, addresses, verification status, and contact details.
 * `admins` - Manages administrative accounts and role permissions.
-* `products` - Houses footwear items, images, descriptions, pricing, and category keys.
+* `products` - Houses apparel items, images, descriptions, pricing, and category keys.
 * `cart` / `order_items` - Manages session-based or account-tied buyer selections.
 * `audit_logs` - Records timestamps, admin IDs, and specific actions performed inside the dashboard.
 

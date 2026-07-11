@@ -6,7 +6,7 @@ require_once __DIR__ . '/../includes/functions.php';
 start_secure_session();
 
 if (is_logged_in()) {
-    header('Location: ../index.php');
+    header('Location: ' . app_url('index.php'));
     exit;
 }
 
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (mysqli_stmt_execute($stmt)) {
                 mysqli_stmt_close($stmt);
-                header('Location: verify-email.php?token=' . urlencode($verification_token));
+                header('Location: ' . app_url('auth/verify-email.php?token=' . urlencode($verification_token)));
                 exit;
             }
 
@@ -130,7 +130,7 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     <?php endif; ?>
 
-    <form method="post" action="register.php" class="auth-form" novalidate>
+    <form method="post" action="<?= app_url('auth/register.php') ?>" class="auth-form" novalidate>
         <div class="form-group">
             <label for="full_name">Full Name</label>
             <input
@@ -185,7 +185,7 @@ require_once __DIR__ . '/../includes/header.php';
     </form>
 
     <p class="auth-link">
-        Already have an account? <a href="login.php">Login here</a>.
+        Already have an account? <a href="<?= app_url('auth/login.php') ?>">Login here</a>.
     </p>
 </section>
 

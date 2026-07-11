@@ -3,6 +3,27 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../config/db.php';
 
+if (!defined('BASE_URL')) {
+    $document_root = realpath($_SERVER['DOCUMENT_ROOT'] ?? '');
+    $project_root = realpath(__DIR__ . '/..');
+    $base_url = '';
+
+    if ($document_root && $project_root && str_starts_with($project_root, $document_root)) {
+        $base_url = str_replace('\\', '/', substr($project_root, strlen($document_root)));
+    }
+
+    define('BASE_URL', rtrim($base_url, '/'));
+}
+
+function app_url(string $path = ''): string
+{
+    if ($path === '') {
+        return BASE_URL;
+    }
+
+    return BASE_URL . '/' . ltrim($path, '/');
+}
+
 // ============================================================
 // INPUT HANDLING
 // ============================================================
@@ -70,18 +91,18 @@ function is_admin_logged_in(): bool
     return isset($_SESSION['admin_id']);
 }
 
-function require_login(string $redirect = '/auth/login.php'): void
+function require_login(string $redirect = 'auth/login.php'): void
 {
     if (!is_logged_in()) {
-        header("Location: $redirect");
+        header('Location: ' . app_url($redirect));
         exit;
     }
 }
 
-function require_admin(string $redirect = '/auth/login.php'): void
+function require_admin(string $redirect = 'auth/login.php'): void
 {
     if (!is_admin_logged_in()) {
-        header("Location: $redirect");
+        header('Location: ' . app_url($redirect));
         exit;
     }
 }

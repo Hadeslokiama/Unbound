@@ -2,6 +2,7 @@
 // cart.php
 require_once 'config/db.php';
 require_once 'includes/functions.php';
+require_login();
 require_once 'includes/header.php';
 
 global $conn;
@@ -61,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $logged_
             mysqli_stmt_close($del_stmt);
         }
     }
-    header("Location: cart.php");
+    header('Location: ' . app_url('cart.php'));
     exit;
 }
 
@@ -70,7 +71,7 @@ $items = [];
 $cart_total = 0.00;
 
 if ($logged_in) {
-    $cart_query = "SELECT c.product_id, c.quantity, p.name, p.price, p.image_url 
+    $cart_query = "SELECT c.product_id, c.quantity, p.name, p.price, p.image_path
                    FROM cart c 
                    JOIN products p ON c.product_id = p.id 
                    WHERE c.user_id = ?";
@@ -94,7 +95,7 @@ if ($logged_in) {
     <div class="cart-container" style="padding: 20px;">
         <h1>Your Shopping Cart</h1>
         <?php if (!$logged_in): ?>
-            <p>Please <a href="login.php">login</a> to view or track items assigned to your cart profile.</p>
+            <p>Please <a href="<?= app_url('auth/login.php') ?>">login</a> to view or track items assigned to your cart profile.</p>
         <?php elseif (!empty($items)): ?>
             <table class="admin-table" style="width:100%; border-collapse: collapse; margin-top: 20px;">
                 <thead>
@@ -110,12 +111,12 @@ if ($logged_in) {
                     <?php foreach ($items as $item): ?>
                         <tr style="border-bottom: 1px solid #eee;">
                             <td style="padding: 10px; display: flex; align-items: center; gap: 15px;">
-                                <img src="<?php echo htmlspecialchars($item['image_url']); ?>" width="50" style="height:auto;" alt="">
+                                <img src="<?php echo htmlspecialchars(app_url($item['image_path'])); ?>" width="50" style="height:auto;" alt="">
                                 <span><?php echo htmlspecialchars($item['name']); ?></span>
                             </td>
                             <td style="padding: 10px;">$<?php echo number_format($item['price'], 2); ?></td>
                             <td style="padding: 10px;">
-                                <form action="cart.php" method="POST" style="display:inline-flex; gap: 5px;">
+                                <form action="<?php echo app_url('cart.php'); ?>" method="POST" style="display:inline-flex; gap: 5px;">
                                     <input type="hidden" name="action" value="update">
                                     <input type="hidden" name="product_id" value="<?php echo (int)$item['product_id']; ?>">
                                     <input type="number" name="quantity" value="<?php echo (int)$item['quantity']; ?>" min="1" style="width:60px; padding: 4px;">
@@ -124,7 +125,7 @@ if ($logged_in) {
                             </td>
                             <td style="padding: 10px;">$<?php echo number_format($item['subtotal'], 2); ?></td>
                             <td style="padding: 10px;">
-                                <form action="cart.php" method="POST" style="display:inline;">
+                                <form action="<?php echo app_url('cart.php'); ?>" method="POST" style="display:inline;">
                                     <input type="hidden" name="action" value="remove">
                                     <input type="hidden" name="product_id" value="<?php echo (int)$item['product_id']; ?>">
                                     <button type="submit" class="btn btn-danger" style="padding: 4px 8px; background: red; color: white; border: none; cursor: pointer;">Remove</button>
@@ -137,10 +138,10 @@ if ($logged_in) {
             
             <div class="cart-summary" style="margin-top: 30px; text-align: right;">
                 <h3>Total Amount: $<?php echo number_format($cart_total, 2); ?></h3>
-                <a href="checkout.php" class="btn btn-primary" style="display: inline-block; padding: 12px 24px; margin-top: 10px; text-decoration: none;">Proceed to Checkout</a>
+                <a href="<?= app_url('checkout.php') ?>" class="btn btn-primary" style="display: inline-block; padding: 12px 24px; margin-top: 10px; text-decoration: none;">Proceed to Checkout</a>
             </div>
         <?php else: ?>
-            <p>Your cart layout is currently empty. <a href="index.php">Browse Products</a></p>
+            <p>Your cart layout is currently empty. <a href="<?= app_url('index.php') ?>">Browse Products</a></p>
         <?php endif; ?>
     </div>
 </main>

@@ -9,8 +9,12 @@ $error = '';
 $success = '';
 
 // Only super_admin may create or modify admin accounts.
-$self_result = mysqli_query($conn, "SELECT role FROM admins WHERE id = " . (int) $current_admin_id);
+$self_stmt = mysqli_prepare($conn, "SELECT role FROM admins WHERE id = ?");
+mysqli_stmt_bind_param($self_stmt, "i", $current_admin_id);
+mysqli_stmt_execute($self_stmt);
+$self_result = mysqli_stmt_get_result($self_stmt);
 $self = mysqli_fetch_assoc($self_result);
+mysqli_stmt_close($self_stmt);
 $is_super_admin = ($self['role'] === 'super_admin');
 
 if (!$is_super_admin) {
@@ -50,7 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-$admins_result = mysqli_query($conn, "SELECT id, full_name, email, role, is_active FROM admins ORDER BY id");
+$admins_stmt = mysqli_prepare($conn, "SELECT id, full_name, email, role, is_active FROM admins ORDER BY id");
+mysqli_stmt_execute($admins_stmt);
+$admins_result = mysqli_stmt_get_result($admins_stmt);
+mysqli_stmt_close($admins_stmt);
 ?>
 
 <h1>Manage Admin Users</h1>

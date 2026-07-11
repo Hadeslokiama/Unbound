@@ -7,13 +7,14 @@ require_admin();
 global $conn;
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: inventory.php');
+    header('Location: ' . app_url('admin/inventory.php'));
     exit;
 }
 
 $action = (string) ($_POST['action'] ?? '');
 $admin_id = (int) ($_SESSION['admin_id'] ?? 0);
 
+// Flash keys are accepted session-contract extensions for one-time status messages, separate from auth keys.
 $allowed_categories = ['Tops', 'Bottoms', 'Outerwear', 'Accessories'];
 
 $uploaded_image_path = null;
@@ -60,7 +61,7 @@ if (isset($_FILES['image']) && array_key_exists('error', $_FILES['image']) && $_
 
 if ($upload_error !== '') {
     $_SESSION['flash_error'] = $upload_error;
-    header('Location: inventory.php');
+    header('Location: ' . app_url('admin/inventory.php'));
     exit;
 }
 
@@ -95,7 +96,7 @@ if ($action === 'add_product') {
 
     if (!empty($errors)) {
         $_SESSION['flash_error'] = implode(' ', $errors);
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -110,13 +111,13 @@ if ($action === 'add_product') {
     if (!$stmt) {
         error_log('Product insert prepare failed: ' . mysqli_error($conn));
         $_SESSION['flash_error'] = 'Unable to add product.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
     mysqli_stmt_bind_param(
         $stmt,
-        'ssd sis',
+        'ssdsis',
         $name,
         $description,
         $price,
@@ -139,7 +140,7 @@ if ($action === 'add_product') {
         );
 
         $_SESSION['flash_success'] = 'Product added successfully.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -147,7 +148,7 @@ if ($action === 'add_product') {
     mysqli_stmt_close($stmt);
 
     $_SESSION['flash_error'] = 'Failed to add product.';
-    header('Location: inventory.php');
+    header('Location: ' . app_url('admin/inventory.php'));
     exit;
 }
 
@@ -187,7 +188,7 @@ if ($action === 'update_product') {
 
     if (!empty($errors)) {
         $_SESSION['flash_error'] = implode(' ', $errors);
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -202,7 +203,7 @@ if ($action === 'update_product') {
     if (!$stmt) {
         error_log('Product select prepare failed: ' . mysqli_error($conn));
         $_SESSION['flash_error'] = 'Unable to load product for editing.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -214,7 +215,7 @@ if ($action === 'update_product') {
 
     if (!$current_product) {
         $_SESSION['flash_error'] = 'Product not found.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -236,7 +237,7 @@ if ($action === 'update_product') {
     if (!$stmt) {
         error_log('Product update prepare failed: ' . mysqli_error($conn));
         $_SESSION['flash_error'] = 'Unable to update product.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -272,7 +273,7 @@ if ($action === 'update_product') {
         );
 
         $_SESSION['flash_success'] = 'Product updated successfully.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -280,7 +281,7 @@ if ($action === 'update_product') {
     mysqli_stmt_close($stmt);
 
     $_SESSION['flash_error'] = 'Failed to update product.';
-    header('Location: inventory.php');
+    header('Location: ' . app_url('admin/inventory.php'));
     exit;
 }
 
@@ -289,7 +290,7 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
 
     if ($product_id <= 0) {
         $_SESSION['flash_error'] = 'Invalid product selected.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -304,7 +305,7 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
     if (!$stmt) {
         error_log('Product lookup prepare failed: ' . mysqli_error($conn));
         $_SESSION['flash_error'] = 'Unable to process the selected product.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -316,7 +317,7 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
 
     if (!$current_product) {
         $_SESSION['flash_error'] = 'Product not found.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -332,7 +333,7 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
         if (!$stmt) {
             error_log('Product deactivate prepare failed: ' . mysqli_error($conn));
             $_SESSION['flash_error'] = 'Unable to deactivate product.';
-            header('Location: inventory.php');
+            header('Location: ' . app_url('admin/inventory.php'));
             exit;
         }
 
@@ -351,7 +352,7 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
             );
 
             $_SESSION['flash_success'] = 'Product deactivated successfully.';
-            header('Location: inventory.php');
+            header('Location: ' . app_url('admin/inventory.php'));
             exit;
         }
 
@@ -359,7 +360,7 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
         mysqli_stmt_close($stmt);
 
         $_SESSION['flash_error'] = 'Failed to deactivate product.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -375,7 +376,7 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
     if (!$stmt) {
         error_log('Product status toggle prepare failed: ' . mysqli_error($conn));
         $_SESSION['flash_error'] = 'Unable to toggle product status.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -396,7 +397,7 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
         );
 
         $_SESSION['flash_success'] = 'Product status updated successfully.';
-        header('Location: inventory.php');
+        header('Location: ' . app_url('admin/inventory.php'));
         exit;
     }
 
@@ -404,10 +405,10 @@ if ($action === 'delete_product' || $action === 'toggle_product_status') {
     mysqli_stmt_close($stmt);
 
     $_SESSION['flash_error'] = 'Failed to update product status.';
-    header('Location: inventory.php');
+    header('Location: ' . app_url('admin/inventory.php'));
     exit;
 }
 
 $_SESSION['flash_error'] = 'Invalid action.';
-header('Location: inventory.php');
+header('Location: ' . app_url('admin/inventory.php'));
 exit;

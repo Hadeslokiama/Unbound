@@ -73,9 +73,9 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 
     <?php if ($status === 'success'): ?>
-        <p><a href="login.php?verified=1">Go to Login</a></p>
+        <p><a href="<?= app_url('auth/login.php?verified=1') ?>">Go to Login</a></p>
     <?php else: ?>
-        <p><a href="register.php">Back to Register</a></p>
+        <p><a href="<?= app_url('auth/register.php') ?>">Back to Register</a></p>
     <?php endif; ?>
 </section>
 
