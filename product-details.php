@@ -12,7 +12,7 @@ $product = null;
 
 if ($product_id > 0) {
     // Read exact schema structure targeting verified active configurations
-    $query = "SELECT id, name, description, price, image_url, stock_quantity FROM products WHERE id = ? AND is_active = 1 LIMIT 1";
+    $query = "SELECT id, name, description, price, image_path, stock_quantity FROM products WHERE id = ? AND is_active = 1 LIMIT 1";
     $stmt = mysqli_prepare($conn, $query);
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, "i", $product_id);
@@ -35,7 +35,7 @@ if (!$product) {
 <main class="site-main">
     <div class="product-details-container" style="display: flex; gap: 40px; margin-top: 20px;">
         <div class="product-image-panel" style="flex: 1;">
-            <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="max-width:100%; height:auto;">
+            <img src="<?php echo htmlspecialchars($product['image_path']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="max-width:100%; height:auto;">
         </div>
         <div class="product-info-panel" style="flex: 1;">
             <h1><?php echo htmlspecialchars($product['name']); ?></h1>
