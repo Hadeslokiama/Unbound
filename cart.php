@@ -70,9 +70,9 @@ $items = [];
 $cart_total = 0.00;
 
 if ($logged_in) {
-    $cart_query = "SELECT c.product_id, c.quantity, p.name, p.price, p.image_url 
-                   FROM cart c 
-                   JOIN products p ON c.product_id = p.id 
+    $cart_query = "SELECT c.product_id, c.quantity, p.name, p.price, p.image_path
+                   FROM cart c
+                   JOIN products p ON c.product_id = p.id
                    WHERE c.user_id = ?";
     $stmt = mysqli_prepare($conn, $cart_query);
     if ($stmt) {
@@ -110,7 +110,7 @@ if ($logged_in) {
                     <?php foreach ($items as $item): ?>
                         <tr style="border-bottom: 1px solid #eee;">
                             <td style="padding: 10px; display: flex; align-items: center; gap: 15px;">
-                                <img src="<?php echo htmlspecialchars($item['image_url']); ?>" width="50" style="height:auto;" alt="">
+                                <img src="<?php echo htmlspecialchars($item['image_path']); ?>" width="50" style="height:auto;" alt="">
                                 <span><?php echo htmlspecialchars($item['name']); ?></span>
                             </td>
                             <td style="padding: 10px;">$<?php echo number_format($item['price'], 2); ?></td>
