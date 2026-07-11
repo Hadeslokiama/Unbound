@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $logged_
         if ($action === 'add') {
             $quantity = isset($_POST['quantity']) ? (int)$_POST['quantity'] : 1;
             
-            // Check if user already holds a reference row to this item
+            // Check if user already holds a reference row to thi s item
             $check_stmt = mysqli_prepare($conn, "SELECT id, quantity FROM cart WHERE user_id = ? AND product_id = ?");
             mysqli_stmt_bind_param($check_stmt, "ii", $user_id, $product_id);
             mysqli_stmt_execute($check_stmt);
@@ -70,9 +70,9 @@ $items = [];
 $cart_total = 0.00;
 
 if ($logged_in) {
-    $cart_query = "SELECT c.product_id, c.quantity, p.name, p.price, p.image_url 
-                   FROM cart c 
-                   JOIN products p ON c.product_id = p.id 
+    $cart_query = "SELECT c.product_id, c.quantity, p.name, p.price, p.image_path
+                   FROM cart c
+                   JOIN products p ON c.product_id = p.id
                    WHERE c.user_id = ?";
     $stmt = mysqli_prepare($conn, $cart_query);
     if ($stmt) {
@@ -94,7 +94,7 @@ if ($logged_in) {
     <div class="cart-container" style="padding: 20px;">
         <h1>Your Shopping Cart</h1>
         <?php if (!$logged_in): ?>
-            <p>Please <a href="login.php">login</a> to view or track items assigned to your cart profile.</p>
+            <p>Please <a href="/auth/login.php">login</a> to view or track items assigned to your cart profile.</p>
         <?php elseif (!empty($items)): ?>
             <table class="admin-table" style="width:100%; border-collapse: collapse; margin-top: 20px;">
                 <thead>
@@ -110,7 +110,7 @@ if ($logged_in) {
                     <?php foreach ($items as $item): ?>
                         <tr style="border-bottom: 1px solid #eee;">
                             <td style="padding: 10px; display: flex; align-items: center; gap: 15px;">
-                                <img src="<?php echo htmlspecialchars($item['image_url']); ?>" width="50" style="height:auto;" alt="">
+                                <img src="<?php echo htmlspecialchars($item['image_path']); ?>" width="50" style="height:auto;" alt="">
                                 <span><?php echo htmlspecialchars($item['name']); ?></span>
                             </td>
                             <td style="padding: 10px;">$<?php echo number_format($item['price'], 2); ?></td>
